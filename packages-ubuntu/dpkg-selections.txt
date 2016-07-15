@@ -414,7 +414,6 @@ gnupg2						install
 gnustep-base-common				install
 gnustep-base-runtime				install
 gnustep-common					install
-google-talkplugin				install
 gparted						install
 gpgv						install
 grdesktop					install
@@ -2445,7 +2444,6 @@ ssh-askpass-gnome				install
 ssh-import-id					install
 sshpass						install
 ssl-cert					install
-steam-launcher					install
 strace						install
 strongswan					install
 strongswan-charon				install
