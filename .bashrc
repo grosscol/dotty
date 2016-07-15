@@ -119,7 +119,7 @@ fi
 # My customizations start here.
 
 # Add fits to path
-export PATH="$PATH":/usr/share/fits-0.8.6/
+export PATH="$PATH":/usr/share/fits-0.8.6
 
 # Add rbenv to path and init
 export PATH="$PATH":"$HOME/.rbenv/bin"
@@ -135,12 +135,21 @@ alias bunx='bundle exec'
 if [[ `ssh-add -l` == *"grossgit"* ]]; then 
 echo 'github identity aldready added.'
 else
-ssh-add -t 8h ~/.ssh/grossgit  ## 8 hour ssh-agent expiration
+ssh-add -t 8h ~/.ssh/grossgit_open  ## 8 hour ssh-agent expiration
 fi
 
 # Function to set the title of the window
 function retitle(){
   echo -ne "\033]2;$1\007"
+}
+
+git_mod_files_list(){
+  git diff --name-only | awk 'BEGIN {ORS=" "}; {print $1}'
+}
+
+# still doesn't get the first file in the list.
+vimsplat(){
+  xargs bash -c '</dev/tty vim -p "$@"'
 }
 
 # Rapid directory ascension
@@ -149,11 +158,42 @@ alias ..3="cd ../../.."
 alias ..4="cd ../../../.."
 alias ..5="cd ../../../../.."
 
+# alias for ssh port forwarding from nectar to check solr
+alias ffnectar='retitle "8881:Nectar:8081"; ssh -tL 8881:localhost:8081 grosscol@nectar'
+
+# alias for querying battery power from the command line
+alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
+
+alias vimmodified='vim -p `git_mod_files_list`'
+
+# Only show the last two directories
+parse_pwd(){
+  pwd | awk 'BEGIN {FS="/";OFS=""}; {print $(NF-1),"/",$NF}'
+}
 # Git branch in prompt display
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
 }
+PS1='\u@\h $(parse_pwd) $(parse_git_branch)\$ '
 
-PS1='\u@\h \w $(parse_git_branch)\$ '
+# Search your bundle for the provided pattern
+#   Examples:
+#     bundle search apply_schema
+#     bundle search current_user hydra-works
+#     bundle search "Change your password" sufia
+#
+# Arguments:
+#  1. What to search for
+#  2. Which gem names to search (defaults to all gems)
+function bgrep {
+  #ag "$@" $(bundle show --paths) .
+  pattern="$1"; shift
+  ag "$pattern" $(bundle show --paths "$@")
+}
 
-[ -r /home/grosscol/.byobu/prompt ] && . /home/grosscol/.byobu/prompt   #byobu-prompt#
+# Configure alias for `fuck`
+eval $(thefuck --alias)
+
+# Add token for pushing hydra community gems.
+export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/hydra_github_token'`
+
