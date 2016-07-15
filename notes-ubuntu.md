@@ -1,5 +1,11 @@
 ## Ubuntu 
 
+### settings
+Add the dns search suffixes to the default interface in /etc/network/interfaces
+```
+iface lo inet loopback
+  dns-search umdl.umich.edu umich.edu
+```
 
 ### other installs
 
