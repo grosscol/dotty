@@ -118,11 +118,11 @@ fi
 
 # My customizations start here.
 
-# Add fits to path
-export PATH="$PATH":/usr/share/fits-0.8.6
+# Add puppet to path for dev tools
+export PATH="$PATH":/opt/puppetlabs/puppet/bin
 
 # Add rbenv to path and init
-export PATH="$PATH":"$HOME/.rbenv/bin"
+export PATH=/home/grosscol/.rbenv/bin:"$PATH"
 eval "$(rbenv init -)"
 
 # Make vim the git editor
@@ -135,7 +135,7 @@ alias bunx='bundle exec'
 if [[ `ssh-add -l` == *"grossgit"* ]]; then 
 echo 'github identity aldready added.'
 else
-ssh-add -t 8h ~/.ssh/grossgit_open  ## 8 hour ssh-agent expiration
+ssh-add -t 8h ~/.ssh/grossgit  ## 8 hour ssh-agent expiration
 fi
 
 # Function to set the title of the window
@@ -166,6 +166,9 @@ alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "stat
 
 alias vimmodified='vim -p `git_mod_files_list`'
 
+# Shortcut for python 3 because ansible makes python life harder
+alias p3='python3'
+
 # Only show the last two directories
 parse_pwd(){
   pwd | awk 'BEGIN {FS="/";OFS=""}; {print $(NF-1),"/",$NF}'
@@ -174,7 +177,8 @@ parse_pwd(){
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
 }
-PS1='\u@\h $(parse_pwd) $(parse_git_branch)\$ '
+# Start with unicode character '∴'
+PS1=$'\u2234''\u $(parse_pwd) $(parse_git_branch)\$ '
 
 # Search your bundle for the provided pattern
 #   Examples:
@@ -191,9 +195,11 @@ function bgrep {
   ag "$pattern" $(bundle show --paths "$@")
 }
 
-# Configure alias for `fuck`
-eval $(thefuck --alias)
-
 # Add token for pushing hydra community gems.
-export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/hydra_github_token'`
+export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/credentials'`
+
+# Re-map caps lock to esc
+xmodmap ~/.caps_to_esc
+
+
 
