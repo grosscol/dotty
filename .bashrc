@@ -116,36 +116,35 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# My customizations start here.
+################################
+# My customizations start here #
+################################
 
-# Add StarDog to path
+##################
+## PATH UPDATES ##
+##################
+
 export PATH="$PATH":"/opt/stardog-5.0.2/bin"
-export STARDOG_HOME="/var/local/stardog"
-
+export PATH=$PATH:/opt/gradle/gradle-3.5/bin
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/home/grosscol/go/bin
+export PATH=~/.local/bin:$PATH
 # Add rbenv to path and init
 export PATH="$PATH":"$HOME/.rbenv/bin"
 eval "$(rbenv init -)"
 
-# Add gradle to path
-export PATH=$PATH:/opt/gradle/gradle-3.5/bin
+##############
+## ENV VARS ##
+##############
 
-# Add go to PATH
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:/home/grosscol/go/bin
-
-# Add ~/.local/bin apps to path
-export PATH=~/.local/bin:$PATH
-
-# Add OntoTools Robot to path
-#export PATH=$PATH:/opt/robot
-
-# Make vim the git editor
 export GIT_EDITOR=vim
+export STARDOG_HOME="/var/local/stardog"
+export GPG_TTY=$(tty)
 
-# Alias bundle exec as bunx
-alias bunx='bundle exec'
+##########
+## KEYS ##
+##########
 
-# Add github keys (8 hour ssh-agent expiration)
 if [[ `ssh-add -l` == *"grossgit"* ]]; then 
 echo 'github identity aldready added.'
 else
@@ -158,14 +157,11 @@ else
   ssh-add -t 8h ~/.ssh/aws_simpl
 fi
 
-# Add bitbucket keys
 if [[ `ssh-add -l` == *"simpl"* ]]; then 
 echo 'simpl identity aldready added.'
 else
   ssh-add -t 8h ~/.ssh/simpl
 fi
-
-# Add terraform keys
 
 if [[ `ssh-add -l` == *"terra_key"* ]]; then 
 echo 'terraform identity aldready added.'
@@ -173,63 +169,35 @@ else
   ssh-add -t 8h ~/.ssh/terra_key
 fi
 
-# GPG key for git
-export GPG_TTY=$(tty)
+###############
+## FUNCTIONS ##
+###############
+git_mod_files_list(){
+  git diff --name-only | awk 'BEGIN {ORS=" "}; {print $1}'
+}
 
-# Remap Caps Lock to Esc
-xmodmap ~/.caps_to_esc
+vimsplat(){
+  xargs bash -c '</dev/tty vim -p "$@"'
+}
 
 # Function to set the title of the window
 function retitle(){
   echo -ne "\033]2;$1\007"
 }
 
-git_mod_files_list(){
-  git diff --name-only | awk 'BEGIN {ORS=" "}; {print $1}'
+# Prepend timestamp to file name
+function stampit () { 
+  mv "$1" "$(dirname $1)/$(date '+%Y%m%d-%H%M%S')_$(basename $1)" 
 }
 
-# Add alias to purge branches that have been merged
-alias gbpurge='git branch --merged | grep -Ev "(\*|master|develop|staging)" | xargs -n 1 git branch -d'
-
-vimsplat(){
-  xargs bash -c '</dev/tty vim -p "$@"'
-}
-
-# Rapid directory ascension
-alias ..2="cd ../.."
-alias ..3="cd ../../.."
-alias ..4="cd ../../../.."
-alias ..5="cd ../../../../.."
-
-# alias for ssh port forwarding from nectar to check solr
-# alias ffnectar='retitle "8881:Nectar:8081"; ssh -tL 8881:localhost:8081 grosscol@nectar'
-
-alias vimmodified='vim -p `git_mod_files_list`'
-
-##########
-# PROMPT #
-##########
-
-# Only show the last two directories
 parse_pwd(){
   pwd | awk 'BEGIN {FS="/";OFS=""}; {print $(NF-1),"/",$NF}'
 }
 
-# Git branch in prompt display
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-# PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
-# PS1='\u $(parse_pwd) $(parse_git_branch)⮞ '
-PS1='∫ $(parse_pwd) $(parse_git_branch)⮞ '
-
-# Search your bundle for the provided pattern
-#   Examples:
-#     bundle search apply_schema
-#     bundle search current_user hydra-works
-#     bundle search "Change your password" sufia
-#
 # Arguments:
 #  1. What to search for
 #  2. Which gem names to search (defaults to all gems)
@@ -239,21 +207,44 @@ function bgrep {
   ag "$pattern" $(bundle show --paths "$@")
 }
 
-# Configure alias for `fuck`
-# eval $(thefuck --alias)
+#############
+## ALIASES ##
+#############
 
-# Add token for pushing hydra community gems.
-# export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/hydra_github_token'`
-
+alias bunx='bundle exec'
+alias vimmodified='vim -p `git_mod_files_list`'
 alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
+# Add alias to purge branches that have been merged
+alias gbpurge='git branch --merged | grep -Ev "(\*|master|develop|staging)" | xargs -n 1 git branch -d'
+
+# Rapid directory ascension
+alias ..2="cd ../.."
+alias ..3="cd ../../.."
+alias ..4="cd ../../../.."
+alias ..5="cd ../../../../.."
+
+##########
+# PROMPT #
+##########
+
+# PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
+PS1='∫ $(parse_pwd) $(parse_git_branch)⮞ '
+
+# Search your bundle for the provided pattern
+#   Examples:
+#     bundle search apply_schema
+#     bundle search current_user hydra-works
+#     bundle search "Change your password" sufia
+#
+
+#############
+# RUN STUFF #
+#############
 
 # Excercism code completion
 if [ -f ~/.config/exercism/exercism_completion.bash ]; then
     . ~/.config/exercism/exercism_completion.bash
 fi
 
-# Prepend timestamp to file name
-function stampit () { 
-  mv "$1" "$(dirname $1)/$(date '+%Y%m%d-%H%M%S')_$(basename $1)" 
-}
-
+# Remap Caps Lock to Esc
+xmodmap ~/.caps_to_esc
