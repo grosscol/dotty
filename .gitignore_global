@@ -1,2 +1,8 @@
+# Ignore vim files
 *.sess
 *.swp
+*.spo
+
+# Ignore IntelliJ
+*.iml
+*.idea
