@@ -118,12 +118,26 @@ fi
 
 # My customizations start here.
 
-# Add puppet to path for dev tools
-export PATH="$PATH":/opt/puppetlabs/puppet/bin
+# Add StarDog to path
+export PATH="$PATH":"/opt/stardog-5.0.2/bin"
+export STARDOG_HOME="/var/local/stardog"
 
 # Add rbenv to path and init
-export PATH=/home/grosscol/.rbenv/bin:"$PATH"
+export PATH="$PATH":"$HOME/.rbenv/bin"
 eval "$(rbenv init -)"
+
+# Add gradle to path
+export PATH=$PATH:/opt/gradle/gradle-3.5/bin
+
+# Add go to PATH
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/home/grosscol/go/bin
+
+# Add ~/.local/bin apps to path
+export PATH=~/.local/bin:$PATH
+
+# Add OntoTools Robot to path
+#export PATH=$PATH:/opt/robot
 
 # Make vim the git editor
 export GIT_EDITOR=vim
@@ -131,12 +145,39 @@ export GIT_EDITOR=vim
 # Alias bundle exec as bunx
 alias bunx='bundle exec'
 
-# Add github keys
+# Add github keys (8 hour ssh-agent expiration)
 if [[ `ssh-add -l` == *"grossgit"* ]]; then 
 echo 'github identity aldready added.'
 else
-ssh-add -t 8h ~/.ssh/grossgit  ## 8 hour ssh-agent expiration
+  ssh-add -t 8h ~/.ssh/grossgit
 fi
+
+if [[ `ssh-add -l` == *"aws_simpl"* ]]; then 
+echo 'aws_simpl identity aldready added.'
+else
+  ssh-add -t 8h ~/.ssh/aws_simpl
+fi
+
+# Add bitbucket keys
+if [[ `ssh-add -l` == *"simpl"* ]]; then 
+echo 'simpl identity aldready added.'
+else
+  ssh-add -t 8h ~/.ssh/simpl
+fi
+
+# Add terraform keys
+
+if [[ `ssh-add -l` == *"terra_key"* ]]; then 
+echo 'terraform identity aldready added.'
+else
+  ssh-add -t 8h ~/.ssh/terra_key
+fi
+
+# GPG key for git
+export GPG_TTY=$(tty)
+
+# Remap Caps Lock to Esc
+xmodmap ~/.caps_to_esc
 
 # Function to set the title of the window
 function retitle(){
@@ -147,7 +188,9 @@ git_mod_files_list(){
   git diff --name-only | awk 'BEGIN {ORS=" "}; {print $1}'
 }
 
-# still doesn't get the first file in the list.
+# Add alias to purge branches that have been merged
+alias gbpurge='git branch --merged | grep -Ev "(\*|master|develop|staging)" | xargs -n 1 git branch -d'
+
 vimsplat(){
   xargs bash -c '</dev/tty vim -p "$@"'
 }
@@ -159,26 +202,27 @@ alias ..4="cd ../../../.."
 alias ..5="cd ../../../../.."
 
 # alias for ssh port forwarding from nectar to check solr
-alias ffnectar='retitle "8881:Nectar:8081"; ssh -tL 8881:localhost:8081 grosscol@nectar'
-
-# alias for querying battery power from the command line
-alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
+# alias ffnectar='retitle "8881:Nectar:8081"; ssh -tL 8881:localhost:8081 grosscol@nectar'
 
 alias vimmodified='vim -p `git_mod_files_list`'
 
-# Shortcut for python 3 because ansible makes python life harder
-alias p3='python3'
+##########
+# PROMPT #
+##########
 
 # Only show the last two directories
 parse_pwd(){
   pwd | awk 'BEGIN {FS="/";OFS=""}; {print $(NF-1),"/",$NF}'
 }
+
 # Git branch in prompt display
 parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1) /'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
-# Start with unicode character '∴'
-PS1=$'\u2234''\u $(parse_pwd) $(parse_git_branch)\$ '
+
+# PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
+# PS1='\u $(parse_pwd) $(parse_git_branch)⮞ '
+PS1='∫ $(parse_pwd) $(parse_git_branch)⮞ '
 
 # Search your bundle for the provided pattern
 #   Examples:
@@ -195,11 +239,21 @@ function bgrep {
   ag "$pattern" $(bundle show --paths "$@")
 }
 
+# Configure alias for `fuck`
+# eval $(thefuck --alias)
+
 # Add token for pushing hydra community gems.
-export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/credentials'`
+# export GITHUB_HYDRA_TOKEN=`cat '/home/grosscol/.gem/hydra_github_token'`
 
-# Re-map caps lock to esc
-xmodmap ~/.caps_to_esc
+alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
 
+# Excercism code completion
+if [ -f ~/.config/exercism/exercism_completion.bash ]; then
+    . ~/.config/exercism/exercism_completion.bash
+fi
 
+# Prepend timestamp to file name
+function stampit () { 
+  mv "$1" "$(dirname $1)/$(date '+%Y%m%d-%H%M%S')_$(basename $1)" 
+}
 
