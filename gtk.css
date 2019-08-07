@@ -1,0 +1,16 @@
+vte-terminal.terminal-screen {
+  background-color: #000000;
+}
+
+vte-terminal.terminal-screen:focus {
+  -TerminalScreen-background-darkness: 1.0;
+}
+
+vte-terminal.terminal-screen:backdrop {
+  background-color: #202020;
+  -TerminalScreen-background-darkness: 0.9;
+}
+
+terminal-screen-container scrollbar.vertical { background-color: #caede0; }
+terminal-screen-container scrollbar.vertical:backdrop { background-color: inherit; }
+

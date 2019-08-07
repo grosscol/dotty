@@ -7,6 +7,10 @@ iface lo inet loopback
   dns-search umdl.umich.edu umich.edu
 ```
 
+## gtk css for terminal window
+A gtk hack to indicate which terminal is in focus by changing the background and scrollbar.
+See: [gtk.css](gtk.css)
+
 ## other installs
 
 nbvm-thefuck
@@ -25,7 +29,7 @@ sudo chmod -R 0755 /l/local/rbenv
 ## Bashrc additions
 
 ### PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
-Use integration symbold because the command line is the ultimate _integrated_ development environment.
+Use integration symbold because the command line is the _integrated_ development environment.
 (◔_◔)
 ```sh
   parse_pwd(){
