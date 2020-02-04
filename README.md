@@ -1,3 +1,17 @@
-## Local Workstation Setup
+# Convenience Recreating Dev Machine Setup
 
-Dotfiles and some notes about setting up a new workstion.
+Currently built on ubuntu bionic this includes bash rc, system settings, and package selections.
+
+## Bashrc
+The current addendum to stock ~/.bashrc provided by ubuntu.
+
+## pieces.md
+Much the same content as the bashrc addendum, but split out and has some comment and explanation.
+
+## packages-ubuntu
+Repo and package selections for current system.  
+Serves as a refernce for:
+
+- "where the heck was I pulling that package from?" 
+- "What was the name of that package I was using for this thing?"
+
