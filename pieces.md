@@ -1,22 +1,20 @@
 # Ubuntu 
 
-## settings
+System settings, installs, and bashrc additions.
+
+## Settings
 Add the dns search suffixes to the default interface in /etc/network/interfaces
 ```
 iface lo inet loopback
   dns-search umdl.umich.edu umich.edu
 ```
 
-## gtk css for terminal window
+### gtk css for terminal window
 A gtk hack to indicate which terminal is in focus by changing the background and scrollbar.
 See: [gtk.css](gtk.css)
 
 ## other installs
-
-nbvm-thefuck
-`sudo pip install psutil thefuck`
-
-rbenv
+###rbenv
 ```sh
 sudo mkdir /l/local
 git clone https://github.com/rbenv/rbenv.git /l/local/rbenv
@@ -27,7 +25,6 @@ sudo git clone https://github.com/rbenv/ruby-build.git /l/local/rbenv/plugins/ru
 sudo chmod -R 0755 /l/local/rbenv
 ```
 ## Bashrc additions
-
 ### PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
 Use integration symbold because the command line is the _integrated_ development environment.
 (◔_◔)
@@ -58,7 +55,7 @@ Map the caps lock key to escape as a convenience for typing in vim.
 xmodmap ~/.caps_to_esc
 ```
 
-Where the caps\_to\_esc file contents are as follows:
+Where the `~/.caps_to_esc` file contents are as follows:
 ```
 ! Remap caps lock to esc for xmodmap
 clear Lock
