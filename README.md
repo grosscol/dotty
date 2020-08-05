@@ -15,3 +15,5 @@ Serves as a refernce for:
 - "where the heck was I pulling that package from?" 
 - "What was the name of that package I was using for this thing?"
 
+## Rprofile
+From `~/.Rprofile` that automatically loads devtools for interactive sessions

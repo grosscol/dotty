@@ -11,6 +11,7 @@ export PATH=$PATH:/opt/gradle/gradle-3.5/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/home/grosscol/go/bin
 export PATH=~/.local/bin:$PATH
+# Add rbenv to path and init
 export PATH="$PATH":"$HOME/.rbenv/bin"
 eval "$(rbenv init -)"
 
@@ -18,30 +19,33 @@ eval "$(rbenv init -)"
 ## ENV VARS ##
 ##############
 
+export NVM_DIR="$HOME/.nvm"
 export GIT_EDITOR=vim
 export STARDOG_HOME="/var/local/stardog"
 export GPG_TTY=$(tty)
 export R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/dev/
+export AWS_DEFAULT_KEY_NAME=fill-in-aws-keyname
 
-##########
-## KEYS ##
-##########
+####################
+## SSH IDENTITIES ##
+####################
 
-if [[ `ssh-add -l` == *"my-github-key"* ]]; then 
+if [[ `ssh-add -l` == *"fill-in-github-keyname"* ]]; then 
 echo 'github identity aldready added.'
 else
-  ssh-add -t 8h ~/.ssh/my-github-key
+  ssh-add -t 8h ~/.ssh/fill-in-github-keyname
 fi
 
-if [[ `ssh-add -l` == *"my-remote-ssh-key"* ]]; then 
-echo 'github identity aldready added.'
+if [[ `ssh-add -l` == *"fill-in-aws-keyname.pem"* ]]; then 
+echo 'useast identity aldready added.'
 else
-  ssh-add -t 8h ~/.ssh/my-remote-ssh-key.pem
+  ssh-add -t 8h ~/.ssh/fill-in-aws-keyname.pem
 fi
 
 ###############
 ## FUNCTIONS ##
 ###############
+
 git_mod_files_list(){
   git diff --name-only | awk 'BEGIN {ORS=" "}; {print $1}'
 }
@@ -103,15 +107,21 @@ alias ..5="cd ../../../../.."
 # PS1 terminated by a neat unicode char ⇶ ⥈ ⮞ ∫
 PS1='∫ $(parse_pwd) $(parse_git_branch)⮞ '
 
-
-#############
-# RUN STUFF #
-#############
+##############
+# COMPLETERS #
+##############
 
 # Excercism code completion
 if [ -f ~/.config/exercism/exercism_completion.bash ]; then
     . ~/.config/exercism/exercism_completion.bash
 fi
+
+# AWS completer
+complete -C '/home/grosscol/miniconda3/bin/aws_completer' aws
+
+#################
+# Key Remapping #
+#################
 
 # Remap Caps Lock to Esc
 xmodmap ~/.caps_to_esc
@@ -149,5 +159,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# AWS cli completer
-"complete -C ‘/usr/local/bin/aws_completer’ aws"
+##############
+# NODE SETUP #
+##############
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
