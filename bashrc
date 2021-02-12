@@ -6,42 +6,32 @@
 ## PATH UPDATES ##
 ##################
 
-export PATH="$PATH":"/opt/stardog-5.0.2/bin"
-export PATH=$PATH:/opt/gradle/gradle-3.5/bin
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:/home/grosscol/go/bin
-export PATH=~/.local/bin:$PATH
 # Add rbenv to path and init
-export PATH="$PATH":"$HOME/.rbenv/bin"
+PATH="$PATH":"$HOME/.rbenv/bin"
 eval "$(rbenv init -)"
 
-##############
-## ENV VARS ##
-##############
+# Accomodate setting npm prefix. npm config set previx ~/.npm
+PATH="$PATH":"$HOME/.npm/bin"
 
-export NVM_DIR="$HOME/.nvm"
-export GIT_EDITOR=vim
-export STARDOG_HOME="/var/local/stardog"
-export GPG_TTY=$(tty)
-export R_LIBS_USER=~/R/x86_64-pc-linux-gnu-library/dev/
-export AWS_DEFAULT_KEY_NAME=fill-in-aws-keyname
+export PATH
 
 ####################
 ## SSH IDENTITIES ##
 ####################
 
 if [[ `ssh-add -l` == *"fill-in-github-keyname"* ]]; then 
-echo 'github identity aldready added.'
+ : # Do nothing
 else
   ssh-add -t 8h ~/.ssh/fill-in-github-keyname
 fi
 
 if [[ `ssh-add -l` == *"fill-in-aws-keyname.pem"* ]]; then 
-echo 'useast identity aldready added.'
+ : # Do nothing
 else
   ssh-add -t 8h ~/.ssh/fill-in-aws-keyname.pem
 fi
 
+export AWS_DEFAULT_KEY_NAME=your_key_name_here
 ###############
 ## FUNCTIONS ##
 ###############
@@ -75,6 +65,12 @@ parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
+# Remap Caps Lock to Esc as function. 
+# May need to exec manually if X session restart resets keymapping.
+remap_caps(){
+  xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+}
+
 # Arguments:
 #  1. What to search for
 #  2. Which gem names to search (defaults to all gems)
@@ -93,6 +89,10 @@ alias vimmodified='vim -p `git_mod_files_list`'
 alias bat='upower -i /org/freedesktop/UPower/devices/battery_BAT0| grep -E "state|to\ full|percentage"'
 # Add alias to purge branches that have been merged
 alias gbpurge='git branch --merged | grep -Ev "(\*|master|develop|staging)" | xargs -n 1 git branch -d'
+alias timestamp='date +%Y%m%dT%H%M%S'
+alias testruby='fd "\.rb$" | entr bundle exec rspec'
+# fd is in a package I don't use, so take name for fdfind (fd-find package)
+alias fd='fdfind'
 
 # Rapid directory ascension
 alias ..2="cd ../.."
@@ -119,31 +119,19 @@ fi
 # AWS completer
 complete -C '/home/grosscol/miniconda3/bin/aws_completer' aws
 
+# Terraform completer
+complete -C /usr/bin/terraform terraform
+
 #################
 # Key Remapping #
 #################
-
 # Remap Caps Lock to Esc
-xmodmap ~/.caps_to_esc
+remap_caps
 
-###############
-# SYSTEM BELL #
-###############
-
-# Change pulse audio bell intercept to something less annoying.
-MUTED_LOADED=$(pactl list short modules | grep -c mutedbell)
-if [[ ${SOOTHING_LOADED} -eq 0 ]]; then
-  pactl upload-sample /usr/share/cinnamon/sounds/togglekeys-sound-off.ogg mutedbell 
-  pactl unload-module module-x11-bell
-  pactl load-module module-x11-bell sample=mutedbell 1> /dev/null
-else
-  echo "muted bell already loaded."
-fi
 
 ################
 # PYTHON SETUP #
 ################
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/grosscol/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
