@@ -1,8 +1,8 @@
 [user]
-	email = grosscol@gmail.com
+	email = yerusername@gmail.com
 	name = Colin Gross
 [core]
-	excludesfile = /home/grosscol/.gitignore_global
+	excludesfile = /home/yerusername/.gitignore_global
 	editor = vim
 [push]
 	default = matching

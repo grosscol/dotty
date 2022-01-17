@@ -117,7 +117,7 @@ if [ -f ~/.config/exercism/exercism_completion.bash ]; then
 fi
 
 # AWS completer
-complete -C '/home/grosscol/miniconda3/bin/aws_completer' aws
+complete -C '/home/yerusername/miniconda3/bin/aws_completer' aws
 
 # Terraform completer
 complete -C /usr/bin/terraform terraform
@@ -134,14 +134,14 @@ remap_caps
 ################
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/grosscol/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/home/yerusername/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/grosscol/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/grosscol/miniconda3/etc/profile.d/conda.sh"
+    if [ -f "/home/yerusername/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/yerusername/miniconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/grosscol/miniconda3/bin:$PATH"
+        export PATH="/home/yerusername/miniconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
